@@ -67,9 +67,7 @@ A data analytics project that uses SQL for data extraction and Excel for data cl
 
 **Purpose**
 
-*This project was created to:
-
-*Practice SQL data extraction
+*This project was created to Practice SQL data extraction
 
 *Improve Excel data cleaning and pivot skills
 
