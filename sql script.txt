@@ -1,0 +1,114 @@
+korean category
+
+SELECT 
+p.name as Korean_product,
+Sum(SI.price * SI.quantity) as Total_sales,
+Sum(SI.price - p.cost) as Total_profit,
+sum(SI.quantity) As Quantity,
+Rank() over (order by Sum(SI.price * SI.quantity)desc) sales_rank
+FROM sales as SALE
+LEFT JOIN sale_items as SI
+    ON SI.sale_id = SALE.id
+LEFT JOIN products as p
+    ON SI.product_name = p.name
+WHERE p.category = 'Korean'
+And Sale.is_voided = 0
+GROUP BY p.id,p.name
+
+Food item 
+
+select 
+Product.name as Food_Items,
+Sum(SI.price * Si.quantity) as Total_sales,
+Sum(SI.quantity) as Total_Quantity_sold,
+RANK() OVER(ORDER BY Sum(SI.price * SI.quantity)desc) sales_rank
+FROM products as Product
+LEFT JOIN sale_items as SI
+    ON SI.product_name = Product.name
+LEFT JOIN sales as SALE
+    ON SI.sale_id = SALE.id
+WHERE Product.name IN (
+    'Siopao',
+    'Pastil',
+    'Fried chicken',
+    'Fried chicken with Rice',
+    'Tea Juice SML',
+    'Tea Juice Large',
+    'Pastil with FC',
+    'Hunggarian Sausage',
+    'Hunggarian Sausage with rice',
+    'Hunggarian Sausage with pastil',
+    'Rice',
+    'Siomai',
+    'Siomai Rice')
+GROUP BY SI.product_name,Product.name
+
+
+Daily sales
+
+SELECT 
+DAY(sale_date) AS DATES,
+Sum(total_amount) as Total_Sales
+FROM sales
+WHERE sale_date BETWEEN '2026-03-01' AND '2026-03-31'
+AND is_voided = 0
+GROUP BY DAY(sale_date)
+
+
+Monthly sales
+
+SELECT 
+MONTH(sale_date) AS MONTHS,
+Sum(total_amount) AS MONTHLY_SALES
+FROM sales
+WHERE YEAR(sale_date) = '2026'
+AND is_voided = 0
+GROUP BY MONTH(sale_date);
+
+Total Sales transaction
+
+SELECT 
+Sum(total_amount) AS Total_sales
+FROM sales
+WHERE is_voided = 0
+
+
+average customer minute interval
+
+SELECT
+    AVG(interval_minutes) as avg_interval_minutes
+FROM 
+    (SELECT
+        sale_date,
+        TIMESTAMPDIFF(
+            MINUTE,
+            LAG(sale_date) OVER (ORDER BY sale_date),
+            sale_date
+        )AS interval_minutes
+        FROM sales
+        ) t
+WHERE YEAR(sale_date) = '2026'
+AND interval_minutes IS NOT NULL;
+
+peak hour and total customer
+
+SELECT
+HOUR(sale_date) as hour_of_day,
+COUNT(*) AS total_customers 
+FROM sales
+WHERE YEAR(sale_date) = '2026'
+GROUP BY HOUR(sale_date)
+ORDER BY total_customers DESC
+LIMIT 1;
+
+PEAK DAY
+
+SELECT
+    DAYNAME(sale_date) AS day_name,
+    COUNT(*) AS total_customers
+FROM sales
+WHERE sale_date >= '2026-01-01'
+  AND sale_date < '2027-01-01'
+GROUP BY DAYNAME(sale_date)
+ORDER BY total_customers DESC
+LIMIT 1;
