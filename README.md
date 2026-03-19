@@ -63,7 +63,7 @@ A data analytics project that uses SQL for data extraction and Excel for data cl
 
 *Open in Microsoft Excel
 
-*Explore the dashboard and interact with filters (if meron)
+*Explore the dashboard
 
 **Purpose**
 
